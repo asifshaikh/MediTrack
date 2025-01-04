@@ -14,7 +14,12 @@ export default function LoginScreen() {
         />
       </View>
       <View
-        style={{ padding: 20, backgroundColor: Colors.PRIMARY, height: '100%' }}
+        style={{
+          padding: 20,
+          backgroundColor: Colors.PRIMARY,
+          height: '100%',
+          borderRadius: 30,
+        }}
       >
         <Text
           style={{

@@ -4,13 +4,46 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  ToastAndroid,
+  Alert,
 } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import Colors from '../../constant/Colors';
 import { useRouter } from 'expo-router';
+import { auth } from '../../configs/FirebaseConfig';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 
 export default function SignUp() {
   const router = useRouter();
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
+  const [fullName, setFullName] = useState();
+
+  const onCreateAccount = () => {
+    if (!email || !password || !fullName) {
+      Alert.alert('Error', 'Please fill all fields');
+      return;
+    }
+    createUserWithEmailAndPassword(auth, email, password)
+      .then(async (userCredential) => {
+        // Signed up
+        const user = userCredential.user;
+        await updateProfile(user, {
+          displayName: fullName,
+        });
+        router.push('(tabs)');
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorMessage);
+        if (errorCode === 'auth/email-already-in-use') {
+          Alert.alert('Error', 'Email already in use');
+        }
+        // ..
+      });
+  };
+
   return (
     <View
       style={{
@@ -25,7 +58,11 @@ export default function SignUp() {
       </View>
       <View style={{ marginTop: 20 }}>
         <Text>Email</Text>
-        <TextInput placeholder='Email' style={style.textInput} />
+        <TextInput
+          placeholder='Email'
+          style={style.textInput}
+          onChangeText={(value) => setEmail(value)}
+        />
       </View>
       <View style={{ marginTop: 20 }}>
         <Text>Password</Text>
@@ -33,9 +70,10 @@ export default function SignUp() {
           placeholder='Password'
           style={style.textInput}
           secureTextEntry={true}
+          onChangeText={(value) => setPassword(value)}
         />
       </View>
-      <TouchableOpacity style={style.button}>
+      <TouchableOpacity style={style.button} onPress={onCreateAccount}>
         <Text style={{ color: 'white', textAlign: 'center', fontSize: 17 }}>
           Sign Up
         </Text>

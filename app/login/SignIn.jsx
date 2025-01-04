@@ -4,13 +4,43 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import React from 'react';
+import { useState } from 'react';
 import Colors from '../../constant/Colors';
 import { useRouter } from 'expo-router';
+import { auth } from '../../configs/FirebaseConfig';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 const SignIn = () => {
   const router = useRouter();
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
+
+  const onSignInClick = () => {
+    if (!email || !password) {
+      Alert.alert('Error', 'Please fill all fields');
+      return;
+    }
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        console.log(user);
+        router.replace('(tabs)');
+        // ...
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorMessage);
+        if (errorCode === 'auth/invalid-credential') {
+          Alert.alert('Error', 'Invalid Email or Password');
+        }
+      });
+  };
+
   return (
     <View
       style={{
@@ -22,7 +52,11 @@ const SignIn = () => {
       <Text style={style.subText}>Welcome Back</Text>
       <View style={{ marginTop: 40 }}>
         <Text>Email</Text>
-        <TextInput placeholder='Email' style={style.textInput} />
+        <TextInput
+          placeholder='Email'
+          style={style.textInput}
+          onChangeText={(value) => setEmail(value)}
+        />
       </View>
       <View style={{ marginTop: 20 }}>
         <Text>Password</Text>
@@ -30,9 +64,10 @@ const SignIn = () => {
           placeholder='Password'
           style={style.textInput}
           secureTextEntry={true}
+          onChangeText={(value) => setPassword(value)}
         />
       </View>
-      <TouchableOpacity style={style.button}>
+      <TouchableOpacity style={style.button} onPress={onSignInClick}>
         <Text style={{ color: 'white', textAlign: 'center', fontSize: 17 }}>
           Sign In
         </Text>
