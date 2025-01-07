@@ -17,7 +17,7 @@ export default function AddMedicationHeader() {
       <TouchableOpacity
         style={{
           position: 'absolute',
-          padding: 25,
+          padding: 30,
         }}
         onPress={() => router.back()}
       >
