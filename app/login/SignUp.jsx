@@ -56,7 +56,11 @@ export default function SignUp() {
       <Text style={style.textHeader}>Create New Account</Text>
       <View style={{ marginTop: 40 }}>
         <Text>Full Name</Text>
-        <TextInput placeholder='Full Name' style={style.textInput} />
+        <TextInput
+          placeholder='Full Name'
+          style={style.textInput}
+          onChangeText={(value) => setFullName(value)}
+        />
       </View>
       <View style={{ marginTop: 20 }}>
         <Text>Email</Text>
