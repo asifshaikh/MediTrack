@@ -39,7 +39,7 @@ export default function Header() {
             source={require('../../assets/images/smiley.png')}
             style={{ width: 45, height: 45 }}
           />
-          <Text style={{ fontWeight: 'bold', fontSize: 30 }}>
+          <Text style={{ fontWeight: 'bold', fontSize: 25 }}>
             Hello {user?.displayName} 👋
           </Text>
         </View>
