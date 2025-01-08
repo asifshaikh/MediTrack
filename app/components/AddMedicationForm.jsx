@@ -13,6 +13,7 @@ import Colors from '../../constant/Colors';
 import { TypeList } from '../../constant/Options';
 import { WhenToTake } from '../../constant/Options';
 import { Picker } from '@react-native-picker/picker';
+import RNDateTimePicker from '@react-native-community/datetimepicker';
 
 export default function AddMedicationForm() {
   const [formData, setFormData] = useState();
@@ -111,6 +112,33 @@ export default function AddMedicationForm() {
           ))}
         </Picker>
       </View>
+
+      {/* Start and End Date */}
+      <View style={style.dateInputGroup}>
+        <View style={[style.inputGroup, { flex: 1 }]}>
+          <Ionicons
+            name='calendar-outline'
+            size={24}
+            color='black'
+            style={style.icon}
+          />
+          <Text style={style.text}>{formData?.startDate ?? 'Start Date'}</Text>
+          <RNDateTimePicker
+            minimumDate={new Date()}
+            onChange={(event) => console.log(event.nativeEvent.timestamp)}
+            value={formData?.startDate ?? new Date()}
+          />
+        </View>
+        <View style={[style.inputGroup, { flex: 1 }]}>
+          <Ionicons
+            name='calendar-outline'
+            size={24}
+            color='black'
+            style={style.icon}
+          />
+          <Text style={style.text}>{formData?.startDate ?? 'End Date'}</Text>
+        </View>
+      </View>
     </View>
   );
 }
@@ -143,5 +171,15 @@ const style = StyleSheet.create({
   },
   typeText: {
     fontSize: 16,
+  },
+  text: {
+    fontSize: 16,
+    padding: 5,
+    marginLeft: 10,
+    flex: 1,
+  },
+  dateInputGroup: {
+    flexDirection: 'row',
+    gap: 10,
   },
 });
