@@ -8,8 +8,11 @@ import {
 } from 'react-native';
 import React, { useState } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
+
 import Colors from '../../constant/Colors';
 import { TypeList } from '../../constant/Options';
+import { WhenToTake } from '../../constant/Options';
+import { Picker } from '@react-native-picker/picker';
 
 export default function AddMedicationForm() {
   const [formData, setFormData] = useState();
@@ -23,7 +26,9 @@ export default function AddMedicationForm() {
 
   return (
     <View style={{ padding: 20 }}>
+      {/* Add New Medication */}
       <Text style={style.header}>Add New Medication</Text>
+
       <View style={style.inputGroup}>
         <Ionicons
           name='medkit-outline'
@@ -37,9 +42,11 @@ export default function AddMedicationForm() {
           onChangeText={(value) => onHandleInputChange('name', value)}
         />
       </View>
+
+      {/* Type */}
       <FlatList
         style={{
-          marginTop: 15,
+          marginTop: 5,
         }}
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -69,6 +76,41 @@ export default function AddMedicationForm() {
           </TouchableOpacity>
         )}
       />
+      {/* DOSE */}
+      <View style={style.inputGroup}>
+        <Ionicons
+          name='eyedrop-outline'
+          size={24}
+          color='black'
+          style={style.icon}
+        />
+        <TextInput
+          placeholder='Dose Ex: 2 Tabs, 5ml etc'
+          style={style.textInput}
+          onChangeText={(value) => onHandleInputChange('dose', value)}
+        />
+      </View>
+
+      {/* When to Take Dropdown */}
+      <View style={style.inputGroup}>
+        <Ionicons
+          name='time-outline'
+          size={24}
+          color='black'
+          style={style.icon}
+        />
+        <Picker
+          selectedValue={formData?.when}
+          onValueChange={(itemValue, itemIndex) =>
+            onHandleInputChange('when', itemValue)
+          }
+          style={{ width: '90%' }}
+        >
+          {WhenToTake.map((item, index) => (
+            <Picker.Item key={index} label={item} value={item} />
+          ))}
+        </Picker>
+      </View>
     </View>
   );
 }
