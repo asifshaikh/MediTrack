@@ -17,6 +17,8 @@ import RNDateTimePicker from '@react-native-community/datetimepicker';
 
 export default function AddMedicationForm() {
   const [formData, setFormData] = useState();
+
+  const [showStartDate, setShowStartDate] = useState(false);
   const onHandleInputChange = (field, value) => {
     setFormData((prev) => ({
       ...prev,
@@ -115,7 +117,10 @@ export default function AddMedicationForm() {
 
       {/* Start and End Date */}
       <View style={style.dateInputGroup}>
-        <View style={[style.inputGroup, { flex: 1 }]}>
+        <TouchableOpacity
+          style={[style.inputGroup, { flex: 1 }]}
+          onPress={() => setShowStartDate(true)}
+        >
           <Ionicons
             name='calendar-outline'
             size={24}
@@ -123,12 +128,17 @@ export default function AddMedicationForm() {
             style={style.icon}
           />
           <Text style={style.text}>{formData?.startDate ?? 'Start Date'}</Text>
+        </TouchableOpacity>
+        {showStartDate && (
           <RNDateTimePicker
             minimumDate={new Date()}
-            onChange={(event) => console.log(event.nativeEvent.timestamp)}
+            onChange={(event) => {
+              console.log(event.nativeEvent.timestamp);
+              setShowStartDate(false);
+            }}
             value={formData?.startDate ?? new Date()}
           />
-        </View>
+        )}
         <View style={[style.inputGroup, { flex: 1 }]}>
           <Ionicons
             name='calendar-outline'
