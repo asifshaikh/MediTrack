@@ -14,11 +14,13 @@ import { TypeList } from '../../constant/Options';
 import { WhenToTake } from '../../constant/Options';
 import { Picker } from '@react-native-picker/picker';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
+import { FormatDate, FormatDateForText } from '../../service/ConvertDateTime';
 
 export default function AddMedicationForm() {
   const [formData, setFormData] = useState();
 
   const [showStartDate, setShowStartDate] = useState(false);
+  const [showEndDate, setShowEndDate] = useState(false);
   const onHandleInputChange = (field, value) => {
     setFormData((prev) => ({
       ...prev,
@@ -127,27 +129,50 @@ export default function AddMedicationForm() {
             color='black'
             style={style.icon}
           />
-          <Text style={style.text}>{formData?.startDate ?? 'Start Date'}</Text>
+          <Text style={style.text}>
+            {FormatDateForText(formData?.startDate) ?? 'Start Date'}
+          </Text>
         </TouchableOpacity>
         {showStartDate && (
           <RNDateTimePicker
             minimumDate={new Date()}
             onChange={(event) => {
-              console.log(event.nativeEvent.timestamp);
+              onHandleInputChange(
+                'startDate',
+                FormatDate(event.nativeEvent.timestamp)
+              );
               setShowStartDate(false);
             }}
-            value={formData?.startDate ?? new Date()}
+            value={new Date(formData?.startDate) ?? new Date()}
           />
         )}
-        <View style={[style.inputGroup, { flex: 1 }]}>
+        <TouchableOpacity
+          style={[style.inputGroup, { flex: 1 }]}
+          onPress={() => setShowEndDate(true)}
+        >
           <Ionicons
             name='calendar-outline'
             size={24}
             color='black'
             style={style.icon}
           />
-          <Text style={style.text}>{formData?.startDate ?? 'End Date'}</Text>
-        </View>
+          <Text style={style.text}>
+            {FormatDateForText(formData?.endDate) ?? 'End Date'}
+          </Text>
+        </TouchableOpacity>
+        {showEndDate && (
+          <RNDateTimePicker
+            minimumDate={new Date()}
+            onChange={(event) => {
+              onHandleInputChange(
+                'endDate',
+                FormatDate(event.nativeEvent.timestamp)
+              );
+              setShowEndDate(false);
+            }}
+            value={new Date(formData?.endDate) ?? new Date()}
+          />
+        )}
       </View>
     </View>
   );
