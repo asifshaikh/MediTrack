@@ -14,13 +14,18 @@ import { TypeList } from '../../constant/Options';
 import { WhenToTake } from '../../constant/Options';
 import { Picker } from '@react-native-picker/picker';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
-import { FormatDate, FormatDateForText } from '../../service/ConvertDateTime';
+import {
+  FormatDate,
+  FormatDateForText,
+  FormatDateTime,
+} from '../../service/ConvertDateTime';
 
 export default function AddMedicationForm() {
   const [formData, setFormData] = useState();
 
   const [showStartDate, setShowStartDate] = useState(false);
   const [showEndDate, setShowEndDate] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
   const onHandleInputChange = (field, value) => {
     setFormData((prev) => ({
       ...prev,
@@ -143,7 +148,9 @@ export default function AddMedicationForm() {
               );
               setShowStartDate(false);
             }}
-            value={new Date(formData?.startDate) ?? new Date()}
+            value={
+              formData?.startDate ? new Date(formData?.startDate) : new Date()
+            }
           />
         )}
         <TouchableOpacity
@@ -170,10 +177,47 @@ export default function AddMedicationForm() {
               );
               setShowEndDate(false);
             }}
-            value={new Date(formData?.endDate) ?? new Date()}
+            value={formData?.endDate ? new Date(formData?.endDate) : new Date()}
           />
         )}
       </View>
+      {/* Set Reminder Input */}
+      <View style={style.dateInputGroup}>
+        <TouchableOpacity
+          style={[style.inputGroup, { flex: 1 }]}
+          onPress={() => setShowTimePicker(true)}
+        >
+          <Ionicons
+            name='timer-outline'
+            size={24}
+            color='black'
+            style={style.icon}
+          />
+          <Text style={style.text}>
+            {formData?.reminderTime ?? 'Select Reminder Time'}
+          </Text>
+        </TouchableOpacity>
+      </View>
+      {showTimePicker && (
+        <RNDateTimePicker
+          mode='time'
+          onChange={(event) => {
+            onHandleInputChange(
+              'reminderTime',
+              FormatDateTime(event.nativeEvent.timestamp)
+            );
+            setShowTimePicker(false);
+          }}
+          value={
+            formData?.reminderTime
+              ? new Date(formData?.reminderTime)
+              : new Date()
+          }
+        />
+      )}
+      <TouchableOpacity style={style.button}>
+        <Text style={style.buttonText}> Add New Medication</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -216,5 +260,16 @@ const style = StyleSheet.create({
   dateInputGroup: {
     flexDirection: 'row',
     gap: 10,
+  },
+  button: {
+    padding: 15,
+    backgroundColor: Colors.PRIMARY,
+    borderRadius: 15,
+    marginTop: 25,
+  },
+  buttonText: {
+    fontSize: 17,
+    color: 'white',
+    textAlign: 'center',
   },
 });

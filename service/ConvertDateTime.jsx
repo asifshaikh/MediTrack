@@ -6,3 +6,11 @@ export const FormatDate = (timestamp) => {
 export const FormatDateForText = (date) => {
   return moment(date).format('ll');
 };
+export const FormatDateTime = (timestamp) => {
+  const date = new Date(timestamp);
+  const timeString = date.toLocaleTimeString([], {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+  return timeString;
+};
