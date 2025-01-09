@@ -5,6 +5,8 @@ import {
   TextInput,
   FlatList,
   TouchableOpacity,
+  Alert,
+  ActivityIndicator,
 } from 'react-native';
 import React, { useState } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -19,6 +21,11 @@ import {
   FormatDateForText,
   FormatDateTime,
 } from '../../service/ConvertDateTime';
+import { setDoc } from 'firebase/firestore';
+import { doc } from 'firebase/firestore';
+import { db } from '../../configs/FirebaseConfig';
+import { getLocalStorage } from '../../service/Storage';
+import { useRouter } from 'expo-router';
 
 export default function AddMedicationForm() {
   const [formData, setFormData] = useState();
@@ -26,12 +33,52 @@ export default function AddMedicationForm() {
   const [showStartDate, setShowStartDate] = useState(false);
   const [showEndDate, setShowEndDate] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
   const onHandleInputChange = (field, value) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
     }));
     console.log(formData);
+  };
+
+  const saveMedication = async () => {
+    const docId = Date.now().toString();
+    const user = await getLocalStorage('userDetail');
+    if (
+      !(
+        formData?.name ||
+        formData?.type ||
+        formData?.whenToTake ||
+        formData?.startDate ||
+        formData?.endDate ||
+        formData?.reminderTime
+      )
+    ) {
+      Alert.alert('Error', 'Please fill all fields');
+      return;
+    }
+    setLoading(true);
+    try {
+      await setDoc(doc(db, 'medication', docId), {
+        ...formData,
+        userEmail: user?.email,
+        docId: docId,
+      });
+      setLoading(false);
+      Alert.alert('Success', 'Medication added successfully', [
+        {
+          text: 'OK',
+          onPress: () => {
+            router.push('(tabs)');
+          },
+        },
+      ]);
+    } catch (e) {
+      setLoading(false);
+      console.log(e);
+    }
   };
 
   return (
@@ -148,9 +195,7 @@ export default function AddMedicationForm() {
               );
               setShowStartDate(false);
             }}
-            value={
-              formData?.startDate ? new Date(formData?.startDate) : new Date()
-            }
+            value={new Date(formData?.startDate) ?? new Date()}
           />
         )}
         <TouchableOpacity
@@ -177,7 +222,7 @@ export default function AddMedicationForm() {
               );
               setShowEndDate(false);
             }}
-            value={formData?.endDate ? new Date(formData?.endDate) : new Date()}
+            value={new Date(formData?.endDate) ?? new Date()}
           />
         )}
       </View>
@@ -208,15 +253,21 @@ export default function AddMedicationForm() {
             );
             setShowTimePicker(false);
           }}
-          value={
-            formData?.reminderTime
-              ? new Date(formData?.reminderTime)
-              : new Date()
-          }
+          value={new Date(formData?.reminderTime) ?? new Date()}
         />
       )}
-      <TouchableOpacity style={style.button}>
-        <Text style={style.buttonText}> Add New Medication</Text>
+      {/* Button */}
+      <TouchableOpacity
+        style={style.button}
+        onPress={() => {
+          saveMedication();
+        }}
+      >
+        {loading ? (
+          <ActivityIndicator size={'large'} color={'white'} />
+        ) : (
+          <Text style={style.buttonText}> Add New Medication</Text>
+        )}
       </TouchableOpacity>
     </View>
   );
