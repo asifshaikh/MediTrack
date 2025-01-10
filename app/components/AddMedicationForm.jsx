@@ -20,6 +20,7 @@ import {
   FormatDate,
   FormatDateForText,
   FormatDateTime,
+  getDatesRange,
 } from '../../service/ConvertDateTime';
 import { setDoc } from 'firebase/firestore';
 import { doc } from 'firebase/firestore';
@@ -59,12 +60,15 @@ export default function AddMedicationForm() {
       Alert.alert('Error', 'Please fill all fields');
       return;
     }
+    const dates = getDatesRange(formData?.startDate, formData?.endDate);
+    console.log(dates);
     setLoading(true);
     try {
       await setDoc(doc(db, 'medication', docId), {
         ...formData,
         userEmail: user?.email,
         docId: docId,
+        dates: dates,
       });
       setLoading(false);
       Alert.alert('Success', 'Medication added successfully', [

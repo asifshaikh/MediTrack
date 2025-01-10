@@ -14,3 +14,13 @@ export const FormatDateTime = (timestamp) => {
   });
   return timeString;
 };
+export const getDatesRange = (startDate, endDate) => {
+  const start = moment(startDate, 'MM/DD/YYYY');
+  const end = moment(endDate, 'MM/DD/YYYY');
+  const dates = [];
+  while (start.isSameOrBefore(end)) {
+    dates.push(start.format('MM/DD/YYYY'));
+    start.add(1, 'days');
+  }
+  return dates;
+};
