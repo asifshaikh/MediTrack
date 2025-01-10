@@ -6,6 +6,7 @@ import { auth } from '../../configs/FirebaseConfig';
 import { removeLocalStorage } from '../../service/Storage';
 import Header from '../components/Header';
 import EmptyState from '../components/EmptyState';
+import MedicationList from '../components/MedicationList';
 
 const HomeScreen = () => {
   const router = useRouter();
@@ -23,7 +24,8 @@ const HomeScreen = () => {
       }}
     >
       <Header />
-      <EmptyState />
+      {/* <EmptyState /> */}
+      <MedicationList />
       {/* <Text>HomeScreen</Text>
       <Button title='Logout' onPress={() => handleSignOut()} /> */}
     </View>

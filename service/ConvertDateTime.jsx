@@ -24,3 +24,14 @@ export const getDatesRange = (startDate, endDate) => {
   }
   return dates;
 };
+export const getDatesRangeDisplay = () => {
+  const dateList = [];
+  for (let i = 0; i < 7; i++) {
+    dateList.push({
+      date: moment().add(i, 'days').format('DD'), //27
+      day: moment().add(i, 'days').format('ddd'), //Sun,Mon,Tue
+      formattedDate: moment().add(i, 'days').format('L'), //01/10/2025
+    });
+  }
+  return dateList;
+};
