@@ -11,20 +11,44 @@ import { useState } from 'react';
 import { getDatesRangeDisplay } from '../../service/ConvertDateTime';
 import Colors from '../../constant/Colors';
 import moment from 'moment/moment';
+import { getLocalStorage } from '../../service/Storage';
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { db } from '../../configs/FirebaseConfig';
+import MedicationCardItem from './MedicationCardItem';
 export default function MedicationList() {
   const [medList, setMedList] = useState();
   const [dateRange, setDateRange] = useState();
   const [selectedDate, setSelectedDate] = useState(
     moment().format('MM/DD/YYYY')
   );
+  useEffect(() => {
+    getDatesRangeList();
+    getMedList(selectedDate);
+  }, []);
 
   const getDatesRangeList = () => {
     const dateRange = getDatesRangeDisplay();
     setDateRange(dateRange);
   };
-  useEffect(() => {
-    getDatesRangeList();
-  }, []);
+
+  const getMedList = async (selectedDate) => {
+    const user = await getLocalStorage('userDetail');
+    try {
+      const q = query(
+        collection(db, 'medication'),
+        where('userEmail', '==', user.email),
+        where('dates', 'array-contains', selectedDate)
+      );
+      const querySnapshot = await getDocs(q);
+      setMedList([]);
+      querySnapshot.forEach((doc) => {
+        console.log('docId:', +doc.id + '==>', doc.data());
+        setMedList((prev) => [...prev, doc.data()]);
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   return (
     <View
@@ -82,6 +106,10 @@ export default function MedicationList() {
             </Text>
           </TouchableOpacity>
         )}
+      />
+      <FlatList
+        data={medList}
+        renderItem={({ item, index }) => <MedicationCardItem medicine={item} />}
       />
     </View>
   );
