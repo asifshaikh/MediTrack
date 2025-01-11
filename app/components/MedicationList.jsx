@@ -15,12 +15,14 @@ import { getLocalStorage } from '../../service/Storage';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../../configs/FirebaseConfig';
 import MedicationCardItem from './MedicationCardItem';
+import EmptyState from './EmptyState';
 export default function MedicationList() {
   const [medList, setMedList] = useState();
   const [dateRange, setDateRange] = useState();
   const [selectedDate, setSelectedDate] = useState(
     moment().format('MM/DD/YYYY')
   );
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     getDatesRangeList();
     getMedList(selectedDate);
@@ -32,7 +34,9 @@ export default function MedicationList() {
   };
 
   const getMedList = async (selectedDate) => {
+    setLoading(true);
     const user = await getLocalStorage('userDetail');
+    setMedList([]);
     try {
       const q = query(
         collection(db, 'medication'),
@@ -40,13 +44,15 @@ export default function MedicationList() {
         where('dates', 'array-contains', selectedDate)
       );
       const querySnapshot = await getDocs(q);
-      setMedList([]);
+
       querySnapshot.forEach((doc) => {
         console.log('docId:', +doc.id + '==>', doc.data());
         setMedList((prev) => [...prev, doc.data()]);
       });
+      setLoading(false);
     } catch (e) {
       console.log(e);
+      setLoading(false);
     }
   };
 
@@ -80,7 +86,10 @@ export default function MedicationList() {
                     : Colors.LIGHT_GRAY_BORDER,
               },
             ]}
-            onPress={() => setSelectedDate(item.formattedDate)}
+            onPress={() => {
+              setSelectedDate(item.formattedDate);
+              getMedList(item.formattedDate);
+            }}
           >
             <Text
               style={[
@@ -107,10 +116,20 @@ export default function MedicationList() {
           </TouchableOpacity>
         )}
       />
-      <FlatList
-        data={medList}
-        renderItem={({ item, index }) => <MedicationCardItem medicine={item} />}
-      />
+      {medList?.length > 0 ? (
+        <FlatList
+          data={medList}
+          onRefresh={() => getMedList(selectedDate)}
+          refreshing={loading}
+          renderItem={({ item, index }) => (
+            <TouchableOpacity>
+              <MedicationCardItem medicine={item} />
+            </TouchableOpacity>
+          )}
+        />
+      ) : (
+        <EmptyState />
+      )}
     </View>
   );
 }

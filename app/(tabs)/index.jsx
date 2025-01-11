@@ -1,4 +1,4 @@
-import { View, Text, Button } from 'react-native';
+import { View, Text, Button, ScrollView, FlatList } from 'react-native';
 import React from 'react';
 import { Redirect, useRouter } from 'expo-router';
 import { signOut } from 'firebase/auth';
@@ -16,19 +16,24 @@ const HomeScreen = () => {
     router.push('login');
   };
   return (
-    <View
-      style={{
-        padding: 25,
-        backgroundColor: 'white',
-        height: '100%',
-      }}
-    >
-      <Header />
-      {/* <EmptyState /> */}
-      <MedicationList />
-      {/* <Text>HomeScreen</Text>
+    <FlatList
+      data={[]}
+      ListHeaderComponent={
+        <View
+          style={{
+            padding: 25,
+            backgroundColor: 'white',
+            height: '100%',
+          }}
+        >
+          <Header />
+          {/* <EmptyState /> */}
+          <MedicationList />
+          {/* <Text>HomeScreen</Text>
       <Button title='Logout' onPress={() => handleSignOut()} /> */}
-    </View>
+        </View>
+      }
+    />
   );
 };
 
