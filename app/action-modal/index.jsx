@@ -1,12 +1,41 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import React from 'react';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import Colors from '../../constant/Colors';
 import Ionicons from '@expo/vector-icons/Ionicons';
-
+import { arrayUnion, doc, updateDoc } from 'firebase/firestore';
+import { db } from '../../configs/FirebaseConfig';
+import moment from 'moment';
 export default function MedicationActionModal() {
   const medicine = useLocalSearchParams();
   const router = useRouter();
+  const updateActionStatus = async (status) => {
+    try {
+      const docRef = doc(db, 'medication', medicine?.docId);
+      await updateDoc(docRef, {
+        action: arrayUnion({
+          status: status,
+          time: moment().format('LT'),
+          date: medicine?.selectedDate,
+        }),
+      });
+      Alert.alert(status, 'Response Saved', [
+        {
+          text: 'OK',
+          onPress: () => router.replace('(tabs)'),
+        },
+      ]);
+    } catch (e) {
+      console.log(e);
+    }
+  };
   return (
     <View style={style.container}>
       <Image
@@ -22,11 +51,17 @@ export default function MedicationActionModal() {
       </Text>
       <Text style={{ fontSize: 20 }}>Its Time to Take {medicine?.name}</Text>
       <View style={style.buttonContainer}>
-        <TouchableOpacity style={style.closeButton}>
+        <TouchableOpacity
+          style={style.closeButton}
+          onPress={() => updateActionStatus('Missed')}
+        >
           <Ionicons name='close' size={24} color='red' />
           <Text style={{ fontSize: 20, color: 'red' }}>Missed</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={style.successButton}>
+        <TouchableOpacity
+          style={style.successButton}
+          onPress={() => updateActionStatus('Taken')}
+        >
           <Ionicons name='checkmark' size={24} color='white' />
           <Text style={{ fontSize: 20, color: 'white' }}>Taken</Text>
         </TouchableOpacity>
