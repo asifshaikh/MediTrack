@@ -9,7 +9,7 @@ export default function LoginScreen() {
     <View>
       <View style={{ display: 'flex', alignItems: 'center', marginTop: 20 }}>
         <Image
-          source={require('../../assets/images/login.png')}
+          source={require('../../assets/images/login.jpeg')}
           style={style.image}
         />
       </View>

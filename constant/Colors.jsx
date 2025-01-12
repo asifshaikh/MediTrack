@@ -5,4 +5,5 @@ export default {
   LIGHT_GRAY_BORDER: '#E5E7EB',
   LIGHT_PRIMARY: '#d1e9ff',
   GREEN: '#32bf82',
+  MAUVE: '#E0B0FF',
 };

@@ -34,7 +34,7 @@ export default function MedicationCardItem({ medicine }) {
 const style = StyleSheet.create({
   container: {
     padding: 10,
-    backgroundColor: Colors.LIGHT_PRIMARY,
+    backgroundColor: Colors.MAUVE,
     marginTop: 10,
     borderRadius: 15,
     flexDirection: 'row',

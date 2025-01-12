@@ -16,7 +16,9 @@ import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../../configs/FirebaseConfig';
 import MedicationCardItem from './MedicationCardItem';
 import EmptyState from './EmptyState';
+import { useRouter } from 'expo-router';
 export default function MedicationList() {
+  const router = useRouter();
   const [medList, setMedList] = useState();
   const [dateRange, setDateRange] = useState();
   const [selectedDate, setSelectedDate] = useState(
@@ -122,7 +124,17 @@ export default function MedicationList() {
           onRefresh={() => getMedList(selectedDate)}
           refreshing={loading}
           renderItem={({ item, index }) => (
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() =>
+                router.push({
+                  pathname: '/action-modal',
+                  params: {
+                    ...item,
+                    selectedDate: selectedDate,
+                  },
+                })
+              }
+            >
               <MedicationCardItem medicine={item} />
             </TouchableOpacity>
           )}

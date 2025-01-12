@@ -30,7 +30,7 @@ const HomeScreen = () => {
           {/* <EmptyState /> */}
           <MedicationList />
           {/* <Text>HomeScreen</Text>
-      <Button title='Logout' onPress={() => handleSignOut()} /> */}
+          <Button title='Logout' onPress={() => handleSignOut()} /> */}
         </View>
       }
     />
