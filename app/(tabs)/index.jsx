@@ -29,8 +29,8 @@ const HomeScreen = () => {
           <Header />
           {/* <EmptyState /> */}
           <MedicationList />
-          {/* <Text>HomeScreen</Text>
-          <Button title='Logout' onPress={() => handleSignOut()} /> */}
+          <Text>HomeScreen</Text>
+          <Button title='Logout' onPress={() => handleSignOut()} />
         </View>
       }
     />
