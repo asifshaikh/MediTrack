@@ -4,16 +4,23 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 import { useState, useEffect } from 'react';
 import Colors from '../../constant/Colors';
-import getLocalStorage from '../../service/Storage';
+import { getLocalStorage } from '../../service/Storage';
 import { signOut } from 'firebase/auth';
 import { removeLocalStorage } from '../../service/Storage';
 import { auth } from '../../configs/FirebaseConfig';
 export default function Profile() {
   const router = useRouter();
   const [user, setUser] = useState();
+
   useEffect(() => {
     getUserDetails();
   }, []);
+
+  const getUserDetails = async () => {
+    const userInfo = await getLocalStorage('userDetail');
+    console.log(userInfo);
+    setUser(userInfo);
+  };
   const handleSignOut = async () => {
     try {
       await removeLocalStorage();
@@ -22,11 +29,6 @@ export default function Profile() {
     } catch (error) {
       console.error(error);
     }
-  };
-  const getUserDetails = async () => {
-    const userInfo = await getLocalStorage('userDetail');
-    console.log(userInfo);
-    setUser(userInfo);
   };
 
   const Menu = [
@@ -76,6 +78,7 @@ export default function Profile() {
         />
         <Text
           style={{
+            color: Colors.PRIMARY,
             fontSize: 24,
             fontFamily: 'outfit-bold',
             marginTop: 10,
