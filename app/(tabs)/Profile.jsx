@@ -7,6 +7,7 @@ import Colors from '../../constant/Colors';
 import getLocalStorage from '../../service/Storage';
 import { signOut } from 'firebase/auth';
 import { removeLocalStorage } from '../../service/Storage';
+import { auth } from '../../configs/FirebaseConfig';
 export default function Profile() {
   const router = useRouter();
   const [user, setUser] = useState();
@@ -14,9 +15,13 @@ export default function Profile() {
     getUserDetails();
   }, []);
   const handleSignOut = async () => {
-    await removeLocalStorage();
-    signOut(auth);
-    router.replace('/login');
+    try {
+      await removeLocalStorage();
+      await signOut(auth);
+      router.replace('/login');
+    } catch (error) {
+      console.error(error);
+    }
   };
   const getUserDetails = async () => {
     const userInfo = await getLocalStorage('userDetail');
