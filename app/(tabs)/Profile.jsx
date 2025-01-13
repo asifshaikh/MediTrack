@@ -69,7 +69,7 @@ export default function Profile() {
         style={{
           display: 'flex',
           alignItems: 'center',
-          marginVertical: 25,
+          marginVertical: 30,
         }}
       >
         <Image
@@ -104,7 +104,7 @@ export default function Profile() {
             key={item.id}
             onPress={() => onPress(item)}
             style={{
-              marginVertical: 10,
+              marginVertical: 20,
               display: 'flex',
               flexDirection: 'row',
               alignItems: 'center',
