@@ -35,3 +35,15 @@ export const getDatesRangeDisplay = () => {
   }
   return dateList;
 };
+export const getDatesRangeDisplayForHistory = () => {
+  const dates = [];
+  for (let i = 0; i < 7; i++) {
+    const date = moment().subtract(i, 'days');
+    dates.push({
+      date: date.format('DD'), //27
+      day: date.format('dd'), //Sun,Mon,Tue
+      formatted: date.format('L'), //01/10/2025
+    });
+  }
+  return dates;
+};
